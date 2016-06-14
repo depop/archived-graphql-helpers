@@ -1,0 +1,19 @@
+{
+  "name": "graphql-helpers",
+  "version": "0.0.1",
+  "description": "Tools and utilities for making GraphQL servers easier to build",
+  "main": "index.js",
+  "scripts": {
+    "build:parsers": "./node_modules/.bin/jison ./grammars/graphql_type_grammar.jison -o ./src/parsers/typeParser.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jison": "^0.4.17"
+  },
+  "dependencies": {
+    "graphql": "^0.6.0",
+    "graphql-relay": "^0.4.2"
+  }
+}
