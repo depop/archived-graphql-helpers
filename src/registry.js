@@ -22,6 +22,11 @@ class Registry {
   constructor() {
     this.types = {};
     this.interfaces = {};
+    this.addType(GraphQLID);
+    this.addType(GraphQLInt);
+    this.addType(GraphQLBoolean);
+    this.addType(GraphQLFloat);
+    this.addType(GraphQLString);
   }
 
   addType(obj: Object): void {
@@ -32,7 +37,7 @@ class Registry {
     this.interfaces[obj.name] = obj;
   }
 
-  addConnection(types: connectionTypes): void {
+  addConnection(types: Object): void {
     this.addType(types.connectionType);
     this.addType(types.edgeType);
   }
@@ -52,13 +57,4 @@ class Registry {
   }
 }
 
-const registry = new Registry();
-
-registry.addType(GraphQLID);
-registry.addType(GraphQLInt);
-registry.addType(GraphQLBoolean);
-registry.addType(GraphQLFloat);
-registry.addType(GraphQLString);
-
-
-export default registry;
+export default Registry;

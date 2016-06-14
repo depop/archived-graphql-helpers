@@ -1,3 +1,5 @@
+/* @flow */
+
 import {
   GraphQLNonNull,
   GraphQLObjectType,
@@ -8,7 +10,7 @@ import {
   globalIdField,
 } from 'graphql-relay';
 
-import injectResolvers from '../injectResolvers';
+import injectResolvers from './injectResolvers';
 
 import parser from '../parsers/typeParser';
 
