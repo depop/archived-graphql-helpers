@@ -1,6 +1,10 @@
 /* @flow */
 
 export default function injectResolvers(resolvers, fieldFunc) {
+  if (typeof resolvers === 'undefined') {
+    resolvers = {};
+  }
+
   return function() {
     const fields = fieldFunc();
 

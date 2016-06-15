@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
   "scripts": {
-    "build:parsers": "./node_modules/.bin/jison ./grammars/graphql_type_grammar.jison -o ./src/parsers/typeParser.js",
+    "build:parsers": "./node_modules/.bin/jison ./grammars/graphql_grammar.jison -o ./src/parsers/parser.js",
     "test": "cross-env BABEL_ENV=commonjs ava",
     "test:watch": "cross-env BABEL_ENV=commonjs ava --watch"
   },

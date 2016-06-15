@@ -1,5 +1,9 @@
 /* @flow */
 
+import type {
+  GraphQLObjectType,
+} from 'graphql';
+
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -8,9 +12,14 @@ import {
   GraphQLString,
 } from 'graphql';
 
-import buildType from './builders/buildType';
+import build from './builders/build';
 
-class Registry {
+type connectionTypes = {
+  connectionType: GraphQLObjectType,
+  edgeType: GraphQLObjectType,
+};
+
+export default class Registry {
   types: {
     [key: string]: Object,
   };
@@ -35,17 +44,23 @@ class Registry {
 
   addInterface(obj: Object): void {
     this.interfaces[obj.name] = obj;
+    this.types[obj.name] = obj;
   }
 
-  addConnection(types: Object): void {
+  addConnection(types: connectionTypes): void {
     this.addType(types.connectionType);
     this.addType(types.edgeType);
   }
 
-  createType(spec: string, resolvers: Object = {}, description: ?string): Object {
-    const newType = buildType(this, spec, resolvers, description);
-    this.addType(newType);
-    return newType;
+  create(spec: string, resolvers: Object = {}, description: ?string): Object {
+    const [built, builtType] = build(this, spec, resolvers, description);
+
+    if (builtType === 'type') {
+      this.addType(built);
+    } else if (builtType === 'interface'){
+      this.addInterface(built);
+    }
+    return built;
   }
 
   getType(name: string): Object {
@@ -56,5 +71,3 @@ class Registry {
     return this.interfaces[name];
   }
 }
-
-export default Registry;

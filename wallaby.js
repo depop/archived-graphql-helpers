@@ -6,6 +6,7 @@ module.exports = function(wallaby) {
       // {pattern: 'node_modules/babel/node_modules/babel-core/browser-polyfill.js', instrument: false},
       // {pattern: 'node_modules/babel-core/browser-polyfill.js', instrument: false},
       {pattern: 'src/**/__tests__/**/*.test.js', ignore: true},
+      {pattern: 'src/parsers/**/*.js', instrument: false},
       'src/**/*.js',
     ],
 
@@ -15,7 +16,7 @@ module.exports = function(wallaby) {
 
     env: {
       type: 'node',
-      runner: 'node'
+      runner: 'node',
     },
 
     compilers: {

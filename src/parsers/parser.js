@@ -71,67 +71,73 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var typeParser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,13],$V1=[10,13],$V2=[12,15],$V3=[1,25],$V4=[1,29],$V5=[1,28],$V6=[13,22],$V7=[12,13,15,19,22];
+var parser = (function(){
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,18],$V1=[11,15],$V2=[13,17],$V3=[1,33],$V4=[1,37],$V5=[1,36],$V6=[15,24],$V7=[13,15,17,21,24];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"expressions":3,"type_definition":4,"EOF":5,"type":6,"TYPE_NAME":7,"implements":8,"type_list":9,"{":10,"field_list":11,"}":12,",":13,"field":14,"FIELD_NAME":15,"field_arguments":16,":":17,"field_type":18,"!":19,"(":20,"field_argument_list":21,")":22,"field_argument":23,"[":24,"]":25,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",6:"type",7:"TYPE_NAME",8:"implements",10:"{",12:"}",13:",",15:"FIELD_NAME",17:":",19:"!",20:"(",22:")",24:"[",25:"]"},
-productions_: [0,[3,2],[4,7],[4,5],[4,4],[9,3],[9,1],[11,2],[11,1],[14,5],[14,4],[16,3],[16,0],[21,3],[21,1],[23,4],[23,3],[18,3],[18,1]],
+symbols_: {"error":2,"expressions":3,"type_definition":4,"EOF":5,"interface_definition":6,"type":7,"TYPE_NAME":8,"implements":9,"type_list":10,"{":11,"field_list":12,"}":13,"interface":14,",":15,"field":16,"FIELD_NAME":17,"field_arguments":18,":":19,"field_type":20,"!":21,"(":22,"field_argument_list":23,")":24,"field_argument":25,"[":26,"]":27,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",7:"type",8:"TYPE_NAME",9:"implements",11:"{",13:"}",14:"interface",15:",",17:"FIELD_NAME",19:":",21:"!",22:"(",24:")",26:"[",27:"]"},
+productions_: [0,[3,2],[3,2],[4,7],[4,5],[4,4],[6,5],[6,4],[10,3],[10,1],[12,2],[12,1],[16,5],[16,4],[18,3],[18,0],[23,3],[23,1],[25,4],[25,3],[20,3],[20,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
-case 1:
+case 1: case 2:
  return yy.parser.yy; 
 break;
-case 2:
- return {'name': $$[$0-5], 'implements': $$[$0-3], 'fields': $$[$0-1]}; 
-break;
 case 3:
- return {'name': $$[$0-3], 'implements': [], 'fields': $$[$0-1]}; 
+ return {type: 'type', 'name': $$[$0-5], 'implements': $$[$0-3], 'fields': $$[$0-1]}; 
 break;
 case 4:
- return {'name': $$[$0-2], 'implements': [], 'fields': []}; 
+ return {type: 'type', 'name': $$[$0-3], 'implements': [], 'fields': $$[$0-1]}; 
 break;
-case 5: case 13:
- this.$ = $$[$0-2]; this.$.push($$[$0]); 
+case 5:
+ return {type: 'type', 'name': $$[$0-2], 'implements': [], 'fields': []}; 
 break;
-case 6: case 8: case 14:
- this.$ = [$$[$0]]; 
+case 6:
+ return {type: 'interface', 'name': $$[$0-3], 'fields': $$[$0-1]}; 
 break;
 case 7:
- this.$ = $$[$0-1]; this.$.push($$[$0]); 
+ return {type: 'interface', 'name': $$[$0-2], 'fields': []}; 
 break;
-case 9:
- this.$ = {'name': $$[$0-4], 'args': $$[$0-3], 'type': $$[$0-1], 'required': true}; 
+case 8: case 16:
+ this.$ = $$[$0-2]; this.$.push($$[$0]); 
+break;
+case 9: case 11: case 17:
+ this.$ = [$$[$0]]; 
 break;
 case 10:
- this.$ = {'name': $$[$0-3], 'args': $$[$0-2], 'type': $$[$0], 'required': false}; 
-break;
-case 11:
- this.$ = $$[$0-1]; 
+ this.$ = $$[$0-1]; this.$.push($$[$0]); 
 break;
 case 12:
- this.$ = []; 
+ this.$ = {'name': $$[$0-4], 'args': $$[$0-3], 'type': $$[$0-1], 'required': true}; 
+break;
+case 13:
+ this.$ = {'name': $$[$0-3], 'args': $$[$0-2], 'type': $$[$0], 'required': false}; 
+break;
+case 14:
+ this.$ = $$[$0-1]; 
 break;
 case 15:
- this.$ = {'name': $$[$0-3], 'type': $$[$0-1], 'required': true}; 
-break;
-case 16:
- this.$ = {'name': $$[$0-2], 'type': $$[$0], 'required': false}; 
-break;
-case 17:
- this.$ = {'name': $$[$0-1], 'isList': true}; 
+ this.$ = []; 
 break;
 case 18:
+ this.$ = {'name': $$[$0-3], 'type': $$[$0-1], 'required': true}; 
+break;
+case 19:
+ this.$ = {'name': $$[$0-2], 'type': $$[$0], 'required': false}; 
+break;
+case 20:
+ this.$ = {'name': $$[$0-1], 'isList': true}; 
+break;
+case 21:
  this.$ = {'name': $$[$0], 'isList': false}; 
 break;
 }
 },
-table: [{3:1,4:2,6:[1,3]},{1:[3]},{5:[1,4]},{7:[1,5]},{1:[2,1]},{8:[1,6],10:[1,7]},{7:[1,9],9:8},{11:10,12:[1,11],14:12,15:$V0},{10:[1,14],13:[1,15]},o($V1,[2,6]),{12:[1,16],14:17,15:$V0},{5:[2,4]},o($V2,[2,8]),{16:18,17:[2,12],20:[1,19]},{11:20,14:12,15:$V0},{7:[1,21]},{5:[2,3]},o($V2,[2,7]),{17:[1,22]},{15:$V3,21:23,23:24},{12:[1,26],14:17,15:$V0},o($V1,[2,5]),{7:$V4,18:27,24:$V5},{13:[1,31],22:[1,30]},o($V6,[2,14]),{17:[1,32]},{5:[2,2]},o($V2,[2,10],{19:[1,33]}),{7:[1,34]},o($V7,[2,18]),{17:[2,11]},{15:$V3,23:35},{7:$V4,18:36,24:$V5},o($V2,[2,9]),{25:[1,37]},o($V6,[2,13]),o($V6,[2,16],{19:[1,38]}),o($V7,[2,17]),o($V6,[2,15])],
-defaultActions: {4:[2,1],11:[2,4],16:[2,3],26:[2,2],30:[2,11]},
+table: [{3:1,4:2,6:3,7:[1,4],14:[1,5]},{1:[3]},{5:[1,6]},{5:[1,7]},{8:[1,8]},{8:[1,9]},{1:[2,1]},{1:[2,2]},{9:[1,10],11:[1,11]},{11:[1,12]},{8:[1,14],10:13},{12:15,13:[1,16],16:17,17:$V0},{12:19,13:[1,20],16:17,17:$V0},{11:[1,21],15:[1,22]},o($V1,[2,9]),{13:[1,23],16:24,17:$V0},{5:[2,5]},o($V2,[2,11]),{18:25,19:[2,15],22:[1,26]},{13:[1,27],16:24,17:$V0},{5:[2,7]},{12:28,16:17,17:$V0},{8:[1,29]},{5:[2,4]},o($V2,[2,10]),{19:[1,30]},{17:$V3,23:31,25:32},{5:[2,6]},{13:[1,34],16:24,17:$V0},o($V1,[2,8]),{8:$V4,20:35,26:$V5},{15:[1,39],24:[1,38]},o($V6,[2,17]),{19:[1,40]},{5:[2,3]},o($V2,[2,13],{21:[1,41]}),{8:[1,42]},o($V7,[2,21]),{19:[2,14]},{17:$V3,25:43},{8:$V4,20:44,26:$V5},o($V2,[2,12]),{27:[1,45]},o($V6,[2,16]),o($V6,[2,19],{21:[1,46]}),o($V7,[2,20]),o($V6,[2,18])],
+defaultActions: {6:[2,1],7:[2,2],16:[2,5],20:[2,7],23:[2,4],27:[2,6],34:[2,3],38:[2,14]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -615,44 +621,46 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* skip whitespace */
 break;
-case 1:return 6
+case 1:return 7
 break;
-case 2:return 8
+case 2:return 14
 break;
-case 3:return 10
+case 3:return 9
 break;
-case 4:return 12
+case 4:return 11
 break;
-case 5:return 20
+case 5:return 13
 break;
 case 6:return 22
 break;
 case 7:return 24
 break;
-case 8:return 25
+case 8:return 26
 break;
-case 9:return 19
+case 9:return 27
 break;
-case 10:return 13
+case 10:return 21
 break;
-case 11:return 17
+case 11:return 15
 break;
-case 12:return 'DOCSTRING_DELIMETER'
+case 12:return 19
 break;
-case 13:return 7
+case 13:return 'DOCSTRING_DELIMETER'
 break;
-case 14:return 15
+case 14:return 8
 break;
-case 15:return 'WORD'
+case 15:return 17
 break;
-case 16:return 'CHAR'
+case 16:return 'WORD'
 break;
-case 17:return 5
+case 17:return 'CHAR'
+break;
+case 18:return 5
 break;
 }
 },
-rules: [/^(?:[\s\r\n]+)/,/^(?:type\b)/,/^(?:implements\b)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:\[)/,/^(?:\])/,/^(?:!)/,/^(?:,)/,/^(?::)/,/^(?:''')/,/^(?:[A-Z][a-zA-Z_0-9]*)/,/^(?:[a-z][a-zA-Z_0-9]*)/,/^(?:[a-zA-Z_0-9]+)/,/^(?:(.|\n))/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],"inclusive":true}}
+rules: [/^(?:[\s\r\n]+)/,/^(?:type\b)/,/^(?:interface\b)/,/^(?:implements\b)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:\[)/,/^(?:\])/,/^(?:!)/,/^(?:,)/,/^(?::)/,/^(?:''')/,/^(?:[A-Z][a-zA-Z_0-9]*)/,/^(?:[a-z][a-zA-Z_0-9]*)/,/^(?:[a-zA-Z_0-9]+)/,/^(?:(.|\n))/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"inclusive":true}}
 });
 return lexer;
 })();
@@ -666,9 +674,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = typeParser;
-exports.Parser = typeParser.Parser;
-exports.parse = function () { return typeParser.parse.apply(typeParser, arguments); };
+exports.parser = parser;
+exports.Parser = parser.Parser;
+exports.parse = function () { return parser.parse.apply(parser, arguments); };
 exports.main = function commonjsMain(args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');

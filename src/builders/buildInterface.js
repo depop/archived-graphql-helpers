@@ -1,7 +1,7 @@
 /* @flow */
 
 import {
-  GraphQLObjectType,
+  GraphQLInterfaceType,
 } from 'graphql';
 
 import {
@@ -12,11 +12,9 @@ import type Registry from '../Registry';
 import type { specAST } from './astTypes';
 
 import getType from './getType';
-import injectResolvers from './injectResolvers';
 
 
-export default function buildType(registry: Registry, ast: specAST, resolvers): GraphQLObjectType  {
-  const interfaces = () => ast['implements'].map(name => registry.getInterface(name));
+export default function buildInterface(registry: Registry, ast: specAST, resolveType): GraphQLInterfaceType {
   const fields = ast['fields'];
 
   const buildFields = () => {
@@ -63,9 +61,9 @@ export default function buildType(registry: Registry, ast: specAST, resolvers): 
     }, {});
   };
 
-  return new GraphQLObjectType({
+  return new GraphQLInterfaceType({
     name: ast['name'],
-    fields: injectResolvers(resolvers || {}, buildFields),
-    interfaces,
+    fields: buildFields,
+    resolveType,
   });
 }

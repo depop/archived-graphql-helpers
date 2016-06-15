@@ -27,7 +27,7 @@ const logResult =
 };
 
 const timer =
-  (name) =>
+  (name: String) =>
   (fn) =>
   async (obj, args, context, info) => {
     const start = new Date().getTime();

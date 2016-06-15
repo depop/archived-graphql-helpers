@@ -9,6 +9,7 @@
 
 [\s\r\n]+               /* skip whitespace */
 "type"                return 'type'
+"interface"           return 'interface'
 "implements"          return 'implements'
 "{"                   return '{'
 "}"                   return '}'
@@ -36,15 +37,23 @@
 
 expressions
     : type_definition 'EOF' { return yy.parser.yy; }
+    | interface_definition 'EOF' { return yy.parser.yy; }
     ;
 
 type_definition
     : 'type' 'TYPE_NAME' 'implements' type_list '{' field_list '}'
-        { return {'name': $2, 'implements': $4, 'fields': $6}; }
+        { return {type: 'type', 'name': $2, 'implements': $4, 'fields': $6}; }
     | 'type' 'TYPE_NAME' '{' field_list '}'
-        { return {'name': $2, 'implements': [], 'fields': $4}; }
+        { return {type: 'type', 'name': $2, 'implements': [], 'fields': $4}; }
     | 'type' 'TYPE_NAME' '{' '}'
-        { return {'name': $2, 'implements': [], 'fields': []}; }
+        { return {type: 'type', 'name': $2, 'implements': [], 'fields': []}; }
+    ;
+
+interface_definition
+    : 'interface' 'TYPE_NAME' '{' field_list '}'
+        { return {type: 'interface', 'name': $2, 'fields': $4}; }
+    | 'interface' 'TYPE_NAME' '{' '}'
+        { return {type: 'interface', 'name': $2, 'fields': []}; }
     ;
 
 type_list

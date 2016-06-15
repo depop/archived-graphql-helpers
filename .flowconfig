@@ -4,6 +4,8 @@
 # Some modules have their own node_modules with overlap
 .*/node_modules/node-haste/.*
 
+.*/node_modules/jsonlint/test.*
+
 # Ugh
 .*/node_modules/babel.*
 .*/node_modules/babylon.*
