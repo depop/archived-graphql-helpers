@@ -6,13 +6,11 @@
   "jsnext:main": "es/index.js",
   "files": [
     "dist",
-    "grammars",
     "lib",
     "es",
     "src"
   ],
   "scripts": {
-    "build:parsers": "./node_modules/.bin/jison ./grammars/graphql_grammar.jison -m commonjs -o ./src/parsers/parser.js",
     "test": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/ava",
     "test:watch": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/ava --watch",
     "test:cov": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/nyc ./node_modules/.bin/ava",
@@ -63,7 +61,6 @@
     "eslint": "^2.12.0",
     "graphql": "^0.6.0",
     "graphql-relay": "^0.4.0",
-    "jison": "^0.4.17",
     "nyc": "^6.6.1",
     "rimraf": "^2.5.2",
     "standard-react": "^2.0.1",
