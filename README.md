@@ -1,6 +1,12 @@
 # GraphQL Helpers
 
-**Not installable yet, so this readme is more of a sneak peak.**
+A set of utilities for making it easier to work with `graphql-js`.
+
+## Installation
+
+```
+npm install --save graphql-helpers
+```
 
 ## Basic usage
 

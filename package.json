@@ -1,6 +1,6 @@
 {
   "name": "graphql-helpers",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tools and utilities for making GraphQL servers easier to build",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
@@ -42,7 +42,7 @@
   "authors": [
     "Andrew Ingram <andy@andrewingram.net> (https://github.com/AndrewIngram)"
   ],
-  "license": "Apache",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/depop/graphql-helpers/issues"
   },
@@ -50,7 +50,6 @@
     "ava": "^0.15.2",
     "babel-cli": "^6.10.1",
     "babel-eslint": "^6.0.4",
-    "babel-loader": "^6.2.4",
     "babel-plugin-syntax-async-functions": "^6.8.0",
     "babel-plugin-syntax-flow": "^6.8.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
