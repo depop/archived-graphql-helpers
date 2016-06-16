@@ -22,7 +22,7 @@ registry.create(`
 registry.create(`
   type Query {
     blogEntry(slug: String!): BlogEntry
-    blogEntries(): [BlogEntry]
+    blogEntries: [BlogEntry]
   }
 `, {
   blogEntry: /* resolver */,
