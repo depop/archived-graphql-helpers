@@ -2,6 +2,9 @@
 
 A set of utilities for making it easier to work with `graphql-js`.
 
+* Allows creation of types and interfaces via the GraphQL schema syntax
+* Generic resolvers and resolver decorators for common use cases.
+
 ## Installation
 
 ```
@@ -12,7 +15,7 @@ npm install --save graphql-helpers
 
 ```javascript
 import { GraphQLSchema } from 'graphql';
-import { Registry } from `graphql-helpers`;
+import { Registry } from 'graphql-helpers';
 
 const registry = new Registry();
 
@@ -50,7 +53,7 @@ If you want to split your types up into modules (as you probably should), to avo
 ### Example
 
 ```javascript
-// Category.type.js
+// Category.graphql.js
 
 export default (registry) => {
   registry.create(`
@@ -64,7 +67,7 @@ export default (registry) => {
 ```
 
 ```javascript
-// Product.type.js
+// Product.graphql.js
 
 export default (registry) => {
   registry.create(`
@@ -83,7 +86,7 @@ export default (registry) => {
 ```
 
 ```javascript
-// Query.type.js
+// Query.graphql.js
 
 export default (registry) => {
   registry.create(`
@@ -115,4 +118,34 @@ Object.keys(graphQLModules).map(key => graphQLModules[key](registry));
 const schema = new GraphQLSchema({
   query: registry.getType('Query'),
 });
+```
+
+## Generic resolvers and resolver decorators
+
+Certain types of resolver functions often get reused heavily, particularly field aliasing, so they're available to use in a generic form:
+
+```javascript
+import { GraphQLSchema } from 'graphql';
+import { Registry } from 'graphql-helpers';
+import { alias, globalId } from 'graphql-helpers/lib/resolvers/generic';
+import { use, logInput, logResult, timer } from 'graphql-helpers/lib/resolvers/decorators';
+
+import { getUser } from '../userService';
+
+const registry = new Registry();
+
+registry.create(`
+  type BlogEntry {
+    id: ID!
+    title: String
+    slug: String
+    content: String
+    publicationDate: Date
+    author: User
+  }
+`, {
+  id: globalId('id'),
+  publicationDate: alias('publication_date'),
+  author: use(timer('Fetching author'), logResult)(obj => getUser(obj.author_id)),
+};
 ```
