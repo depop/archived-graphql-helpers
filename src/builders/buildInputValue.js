@@ -13,6 +13,8 @@ import getType from './getType';
 
 export default function buildInputValue(registry: Registry, inputValueDefinition: InputValueDefinition): {[name: string]: GraphQLObjectType} {
   return {
-    [inputValueDefinition['name']['value']]: getType(registry, inputValueDefinition.type),
+    [inputValueDefinition['name']['value']]: {
+      type: getType(registry, inputValueDefinition.type),
+    },
   };
 }

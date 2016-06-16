@@ -19,7 +19,7 @@ import buildField from './buildField';
 
 export default function buildType(registry: Registry, definition: ObjectTypeDefinition, resolvers: ?{[name: string]: ResolverFn}): GraphQLObjectType  {
   const interfaces = () =>
-    definition['interfaces'].map(namedType => registry.getInterface(namedType['name']));
+    definition['interfaces'].map(namedType => registry.getInterface(namedType['name']['value']));
   const fields = definition['fields'];
 
   const buildFields = () => {

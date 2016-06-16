@@ -1,6 +1,5 @@
 node_modules
 lib
 es
-graphql-helpers-0.0.1.tgz
 .nyc_output
 graphql-helpers-*.tgz

@@ -33,6 +33,7 @@ export default function buildField(registry: Registry, fieldDefinition: FieldDef
 
   const field = {
     type: getType(registry, fieldType),
+    description: null,
     args,
   };
 
