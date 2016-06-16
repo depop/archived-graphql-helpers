@@ -1,6 +1,9 @@
 [ignore]
 .*/__tests__/.*
 
+./es/.*
+./lib/.*
+
 # Some modules have their own node_modules with overlap
 .*/node_modules/node-haste/.*
 

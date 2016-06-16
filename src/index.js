@@ -1,1 +1,3 @@
-export Registry from './Registry';
+/* @flow */
+
+export {default as Registry} from './Registry';

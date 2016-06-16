@@ -55,9 +55,9 @@ export default class Registry {
   create(spec: string, resolvers: Object = {}, description: ?string): Object {
     const [built, builtType] = build(this, spec, resolvers, description);
 
-    if (builtType === 'type') {
+    if (builtType === 'ObjectTypeDefinition') {
       this.addType(built);
-    } else if (builtType === 'interface'){
+    } else if (builtType === 'InterfaceTypeDefinition'){
       this.addInterface(built);
     }
     return built;

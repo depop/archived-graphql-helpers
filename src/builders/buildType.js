@@ -4,67 +4,35 @@ import {
   GraphQLObjectType,
 } from 'graphql';
 
-import {
-  globalIdField,
-} from 'graphql-relay';
+import type {
+  FieldDefinition,
+  ObjectTypeDefinition,
+} from 'graphql/language';
 
 import type Registry from '../Registry';
-import type { specAST } from './astTypes';
 
-import getType from './getType';
+import type { ResolverFn } from '../resolvers/types';
+
 import injectResolvers from './injectResolvers';
 
+import buildField from './buildField';
 
-export default function buildType(registry: Registry, ast: specAST, resolvers): GraphQLObjectType  {
-  const interfaces = () => ast['implements'].map(name => registry.getInterface(name));
-  const fields = ast['fields'];
+export default function buildType(registry: Registry, definition: ObjectTypeDefinition, resolvers: ?{[name: string]: ResolverFn}): GraphQLObjectType  {
+  const interfaces = () =>
+    definition['interfaces'].map(namedType => registry.getInterface(namedType['name']));
+  const fields = definition['fields'];
 
   const buildFields = () => {
-    return fields.reduce((previous, fieldSpec) => {
-      const typeSpec = fieldSpec['type'];
-      let field;
-
-      const args = fieldSpec['args'].reduce((previous, argSpec) => {
-        const arg = {
-          type: getType(
-            registry,
-            argSpec['type']['name'],
-            argSpec['type']['isList'],
-            argSpec['required'],
-          ),
-        };
-
-        return {
-          ...previous,
-          [argSpec['name']]: arg,
-        };
-      }, {});
-
-      if (typeSpec['name'] === 'ID') {
-        field = globalIdField(ast['name']);
-      } else {
-        const type = getType(
-          registry,
-          typeSpec['name'],
-          typeSpec['isList'],
-          fieldSpec['required'],
-        );
-
-        field = {
-          type,
-          args,
-        };
-      }
-
+    return fields.reduce((previous: Object, fieldDefinition: FieldDefinition) => {
       return {
         ...previous,
-        [fieldSpec['name']]: field,
+        ...buildField(registry, fieldDefinition),
       };
     }, {});
   };
 
   return new GraphQLObjectType({
-    name: ast['name'],
+    name: definition['name']['value'],
     fields: injectResolvers(resolvers || {}, buildFields),
     interfaces,
   });
