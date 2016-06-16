@@ -4,10 +4,25 @@
   "description": "Tools and utilities for making GraphQL servers easier to build",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
+  "files": [
+    "dist",
+    "grammars",
+    "lib",
+    "es",
+    "src"
+  ],
   "scripts": {
-    "build:parsers": "./node_modules/.bin/jison ./grammars/graphql_grammar.jison -o ./src/parsers/parser.js",
-    "test": "cross-env BABEL_ENV=commonjs ava",
-    "test:watch": "cross-env BABEL_ENV=commonjs ava --watch"
+    "build:parsers": "./node_modules/.bin/jison ./grammars/graphql_grammar.jison -m commonjs -o ./src/parsers/parser.js",
+    "test": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/ava",
+    "test:watch": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/ava --watch",
+    "test:cov": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/nyc ./node_modules/.bin/ava",
+    "clean": "./node_modules/.bin/rimraf lib dist es coverage",
+    "lint": "./node_modules/.bin/eslint src",
+    "check:src": "npm run lint && npm run test",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs ./node_modules/.bin/babel src --out-dir lib",
+    "build:es": "cross-env BABEL_ENV=es ./node_modules/.bin/babel src --out-dir es",
+    "build": "npm run build:commonjs && npm run build:es",
+    "prepublish": "npm run clean && npm run check:src && npm run build"
   },
   "ava": {
     "files": [
@@ -20,12 +35,22 @@
     "require": "babel-register",
     "babel": "inherit"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/depop/graphql-helpers.git"
+  },
+  "authors": [
+    "Andrew Ingram <andy@andrewingram.net> (https://github.com/AndrewIngram)"
+  ],
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/depop/graphql-helpers/issues"
+  },
   "devDependencies": {
     "ava": "^0.15.2",
     "babel-cli": "^6.10.1",
     "babel-eslint": "^6.0.4",
+    "babel-loader": "^6.2.4",
     "babel-plugin-syntax-async-functions": "^6.8.0",
     "babel-plugin-syntax-flow": "^6.8.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
@@ -38,11 +63,24 @@
     "cross-env": "^1.0.8",
     "eslint": "^2.12.0",
     "graphql": "^0.6.0",
-    "graphql-relay": "^0.4.2",
+    "graphql-relay": "^0.4.0",
     "jison": "^0.4.17",
+    "nyc": "^6.6.1",
     "rimraf": "^2.5.2",
     "standard-react": "^2.0.1",
-    "stylelint": "^6.5.1",
-    "webpack": "^1.13.1"
-  }
+    "stylelint": "^6.5.1"
+  },
+  "peerDependencies": {
+    "graphql": "^0.6.0",
+    "graphql-relay": "^0.4.0"
+  },
+  "npmName": "graphql-helpers",
+  "npmFileMap": [
+    {
+      "basePath": "/dist/",
+      "files": [
+        "*.js"
+      ]
+    }
+  ]
 }

@@ -8,14 +8,14 @@ import type {
 import type Registry from '../Registry';
 import type { specAST } from './astTypes';
 
-import parser from '../parsers/parser';
+import { parse } from '../parsers/parser';
 
 import buildInterface from './buildInterface';
 import buildType from './buildType';
 
 
 export default function build(registry: Registry, spec: string, resolvers: Object): [GraphQLObjectType | GraphQLInterfaceType, string]  {
-  const ast: specAST = parser.parse(spec);
+  const ast: specAST = parse(spec);
 
  if (ast['type'] === 'type') {
     return [buildType(registry, ast, resolvers), ast['type']];
