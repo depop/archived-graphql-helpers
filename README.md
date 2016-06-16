@@ -5,6 +5,7 @@
 ## Basic usage
 
 ```javascript
+import { GraphQLSchema } from 'graphql';
 import { Registry } from `graphql-helpers`;
 
 const registry = new Registry();
