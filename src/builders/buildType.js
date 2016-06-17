@@ -17,7 +17,7 @@ import injectResolvers from './injectResolvers';
 
 import buildField from './buildField';
 
-export default function buildType(registry: Registry, definition: ObjectTypeDefinition, resolvers: ?{[name: string]: ResolverFn}): GraphQLObjectType  {
+export default function buildType(registry: Registry, definition: ObjectTypeDefinition, resolvers: {[name: string]: ResolverFn} = {}): GraphQLObjectType  {
   const interfaces = () =>
     definition['interfaces'].map(namedType => registry.getInterface(namedType['name']['value']));
   const fields = definition['fields'];
@@ -33,7 +33,7 @@ export default function buildType(registry: Registry, definition: ObjectTypeDefi
 
   return new GraphQLObjectType({
     name: definition['name']['value'],
-    fields: injectResolvers(resolvers || {}, buildFields),
+    fields: () => injectResolvers(resolvers, buildFields),
     interfaces,
   });
 }

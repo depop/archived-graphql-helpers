@@ -29,6 +29,22 @@ test(`A type can have optional fields`, async t => {
   t.is(typeKind, 'ObjectTypeDefinition');
 });
 
+test(`A field can have a custom resolver`, async t => {
+  const [newType,,] = build(new Registry(), `
+    type Simple {
+      id: ID
+      title: String
+    }
+  `, {
+    id: obj => obj.foo,
+  });
+
+  const fields = newType._typeConfig.fields();
+
+  t.is(typeof fields['id']['resolve'], 'function');
+  t.is(typeof fields['title']['resolve'], 'undefined');
+});
+
 test(`A field can have input arguments`, async t => {
   const [newType, typeKind] = build(new Registry(), `
     type Simple {
