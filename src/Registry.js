@@ -14,12 +14,23 @@ import {
 
 import build from './builders/build';
 
+const identity = obj => obj;
+
 type connectionTypes = {
   connectionType: GraphQLObjectType,
   edgeType: GraphQLObjectType,
 };
 
+type Middleware = {
+  wrapInputType: (inputType: Object) => Object,
+  wrapInputTypeFields: (fieldThunk: Object) => Object,
+  wrapType: (type: Object) => Object,
+  wrapTypeFields: (fieldThunk: Object) => Object,
+};
+
 export default class Registry {
+  middleware: Object;
+
   types: {
     [key: string]: Object,
   };
@@ -28,7 +39,8 @@ export default class Registry {
     [key: string]: Object,
   };
 
-  constructor() {
+  constructor(middleware: ?Middleware = null) {
+    middleware;
     this.types = {};
     this.interfaces = {};
     this.addType(GraphQLID);
@@ -36,6 +48,12 @@ export default class Registry {
     this.addType(GraphQLBoolean);
     this.addType(GraphQLFloat);
     this.addType(GraphQLString);
+
+    if (middleware && middleware.wrapTypeFields) {
+      this._wrapTypeFields = middleware.wrapTypeFields;
+    } else {
+      this._wrapTypeFields = identity;
+    }
   }
 
   addType(obj: Object): void {
@@ -52,8 +70,8 @@ export default class Registry {
     this.addType(types.edgeType);
   }
 
-  create(spec: string, resolvers: Object = {}, description: ?string): Object {
-    const [built, builtType] = build(this, spec, resolvers, description);
+  create(spec: string, resolvers: Object = {}): Object {
+    const [built, builtType] = build(this, spec, resolvers);
 
     if (builtType === 'ObjectTypeDefinition') {
       this.addType(built);

@@ -15,7 +15,13 @@ import type Registry from '../Registry';
 export default function getType(registry: Registry, type: Type): ?GraphQLType {
   switch (type.kind) {
     case 'NamedType':
-      return registry.getType(type.name.value);
+      const foundType = registry.getType(type.name.value);
+
+      if (!foundType) {
+        throw new Error(`Error building schema, couldn't find type: ${type.name.value}`);
+      }
+
+      return foundType;
     case 'ListType':
       return new GraphQLList(getType(registry, type.type));
     case 'NonNullType':

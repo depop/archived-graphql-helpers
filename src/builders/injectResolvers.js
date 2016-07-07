@@ -1,21 +1,25 @@
 /* @flow */
 
 import type { ResolverFn } from '../resolvers/types';
+import type { Thunk } from '../functools';
+import { resolveThunk } from '../functools';
 
-type FieldThunk = () => Object;
+import type { GraphQLFieldConfigMap } from 'graphql/type/definition';
 
-export default function injectResolvers(resolvers: {[field: string]: ResolverFn}, fieldThunk: FieldThunk): Object {
-  const fields = fieldThunk();
+export default function injectResolversMiddleware(resolvers: {[field: string]: ResolverFn}) {
+  return (fieldThunk: Thunk): GraphQLFieldConfigMap => {
+    const fields = resolveThunk(fieldThunk);
 
-  return Object.keys(fields).reduce((previous, key) => {
-    const field = fields[key];
+    return Object.keys(fields).reduce((previous, key) => {
+      const field = fields[key];
 
-    return {
-      ...previous,
-      [key]: {
-        ...field,
-        resolve: resolvers[key] || field.resolve,
-      },
-    };
-  }, {});
+      return {
+        ...previous,
+        [key]: {
+          ...field,
+          resolve: resolvers[key] || field.resolve,
+        },
+      };
+    }, {});
+  };
 }

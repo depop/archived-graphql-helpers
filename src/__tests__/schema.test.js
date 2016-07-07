@@ -29,7 +29,7 @@ test(`A schema can be created`, async () => {
 
   registry.create(`
     type Query {
-      product(id: Int!): Product
+      product(id: Int! = a): Product
       products: [Product]
     }
   `);
