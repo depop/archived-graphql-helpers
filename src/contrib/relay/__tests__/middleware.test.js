@@ -10,7 +10,7 @@ import middleware from '../middleware';
 test(`Relay Middleware`, async t => {
   const registry = new Registry(middleware);
 
-  const Category = registry.create(`
+  const Category = registry.buildType(`
     type Category {
       id: ID!
       name: String!

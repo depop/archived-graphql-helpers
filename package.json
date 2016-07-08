@@ -1,6 +1,6 @@
 {
   "name": "graphql-helpers",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Tools and utilities for making GraphQL servers easier to build",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
@@ -79,6 +79,8 @@
     }
   ],
   "dependencies": {
-    "graphql": "^0.6.0"
+    "graphql": "^0.6.0",
+    "i": "^0.3.5",
+    "varname": "^2.0.2"
   }
 }

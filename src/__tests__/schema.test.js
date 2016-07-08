@@ -6,11 +6,10 @@ import {
 
 import Registry from '../Registry';
 
-
 test(`A schema can be created`, async () => {
   const registry = new Registry();
 
-  registry.create(`
+  registry.createType(`
     type Category {
       id: ID!
       name: String!
@@ -18,7 +17,7 @@ test(`A schema can be created`, async () => {
     }
   `);
 
-  registry.create(`
+  registry.createType(`
     type Product {
       id: ID!
       title: String
@@ -27,7 +26,7 @@ test(`A schema can be created`, async () => {
     }
   `);
 
-  registry.create(`
+  registry.createType(`
     type Query {
       product(id: Int! = a): Product
       products: [Product]

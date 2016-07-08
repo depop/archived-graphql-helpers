@@ -6,7 +6,7 @@ import Registry from '../Registry';
 test(`An type can reference another type`, async t => {
   const registry = new Registry();
 
-  registry.create(`
+  registry.createType(`
     type Category {
       id: ID!
       name: String!
@@ -14,7 +14,7 @@ test(`An type can reference another type`, async t => {
     }
   `);
 
-  const productType = registry.create(`
+  const productType = registry.createType(`
     type Product {
       id: ID!
       title: String
@@ -32,7 +32,7 @@ test(`An type can reference another type`, async t => {
 test(`An type can reference arrays of another type`, async t => {
   const registry = new Registry();
 
-  registry.create(`
+  registry.createType(`
     type Category {
       id: ID!
       name: String!
@@ -40,7 +40,7 @@ test(`An type can reference arrays of another type`, async t => {
     }
   `);
 
-  const productType = registry.create(`
+  const productType = registry.createType(`
     type Product {
       id: ID!
       title: String

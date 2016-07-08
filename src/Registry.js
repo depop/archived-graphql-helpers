@@ -10,9 +10,11 @@ import {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  parse,
 } from 'graphql';
 
-import build from './builders/build';
+import * as builders from './builders';
+import mergeTypes from './builders/mergeTypes';
 
 const identity = obj => obj;
 
@@ -28,6 +30,20 @@ type Middleware = {
   wrapTypeFields: (fieldThunk: Object) => Object,
 };
 
+const parseSpec = spec => {
+  try {
+    const ast = parse(spec);
+
+    if (ast.definitions.length !== 1) {
+      throw new Error(`Documents must contain exactly one definition (found: ${ast.definitions.length})`);
+    }
+    return ast.definitions[0];
+  } catch (error) {
+    throw new Error(`Couldn't parse spec: ${spec}`);
+  }
+};
+
+
 export default class Registry {
   middleware: Object;
 
@@ -39,10 +55,13 @@ export default class Registry {
     [key: string]: Object,
   };
 
+  mutations: Array<Object>;
+
   constructor(middleware: ?Middleware = null) {
     middleware;
     this.types = {};
     this.interfaces = {};
+    this.mutations = [];
     this.addType(GraphQLID);
     this.addType(GraphQLInt);
     this.addType(GraphQLBoolean);
@@ -54,10 +73,26 @@ export default class Registry {
     } else {
       this._wrapTypeFields = identity;
     }
+
+    if (middleware && middleware.wrapMutations) {
+      this._wrapMutations = middleware.wrapMutations;
+    } else {
+      this._wrapTypeFields = identity;
+    }
   }
 
   addType(obj: Object): void {
     this.types[obj.name] = obj;
+  }
+
+  buildType(spec: string, resolvers: Object = {}): Object {
+    return builders.buildType(this, parseSpec(spec), resolvers);
+  }
+
+  createType(spec: string, resolvers: Object = {}): Object {
+    const built = builders.buildType(this, parseSpec(spec), resolvers);
+    this.addType(built);
+    return built;
   }
 
   addInterface(obj: Object): void {
@@ -65,20 +100,19 @@ export default class Registry {
     this.types[obj.name] = obj;
   }
 
+  buildInterface(spec: string, resolveType): Object {
+    return builders.buildInterface(this, parseSpec(spec), resolveType);
+  }
+
+  createInterface(spec: string, resolveType): Object {
+    const built = builders.buildInterface(this, parseSpec(spec), resolveType);
+    this.addInterface(built);
+    return built;
+  }
+
   addConnection(types: connectionTypes): void {
     this.addType(types.connectionType);
     this.addType(types.edgeType);
-  }
-
-  create(spec: string, resolvers: Object = {}): Object {
-    const [built, builtType] = build(this, spec, resolvers);
-
-    if (builtType === 'ObjectTypeDefinition') {
-      this.addType(built);
-    } else if (builtType === 'InterfaceTypeDefinition'){
-      this.addInterface(built);
-    }
-    return built;
   }
 
   getType(name: string): Object {
@@ -87,5 +121,20 @@ export default class Registry {
 
   getInterface(name: string): Object {
     return this.interfaces[name];
+  }
+
+  addMutations(mutations: Object): void {
+    this.mutations = [...this.mutations, mutations];
+  }
+
+  createMutations(spec: string, resolvers: Object = {}) {
+    const built = this._wrapMutations(builders.buildType(this, parseSpec(spec), resolvers));
+    this.addMutations(built);
+    return built;
+  }
+
+  getMutationType() {
+    /* Returns a merged aggregate type of all registered mutations */
+    return mergeTypes('Mutation', ...this.mutations);
   }
 }

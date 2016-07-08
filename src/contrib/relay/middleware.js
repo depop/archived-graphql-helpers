@@ -1,4 +1,13 @@
+import {
+  GraphQLInputObjectType,
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+} from 'graphql';
+
 import type { GraphQLFieldConfigMap } from 'graphql/type/definition';
+
+import { camelcase } from 'varname';
 
 import { globalId } from './resolvers';
 
@@ -6,17 +15,68 @@ import type { Thunk } from '../../functools';
 import { resolveThunk } from '../../functools';
 
 
+function wrapMutationOutput(name, type) {
+  const augmentedFields = () => ({
+    ...resolveThunk(type._typeConfig.fields),
+    clientMutationId: {
+      type: new GraphQLNonNull(GraphQLString),
+     },
+  });
+
+  return new GraphQLObjectType({
+    name: `${camelcase(name)}Payload`,
+    fields: augmentedFields,
+    interfaces: type._typeConfig.interfaces,
+  });
+}
+
+function inputTypeFromArgs(name, args) {
+  return new GraphQLInputObjectType({
+    name: `${camelcase(name)}Input`,
+    fields: {
+      ...args,
+      clientMutationId: {
+        type: new GraphQLNonNull(GraphQLString),
+      },
+    },
+  });
+}
+
+
 export default ({
-  wrapInputType(obj) {
-    return obj;
-  },
+  wrapMutations(mutations) {
+    const inputFields = mutations._typeConfig.fields;
 
-  wrapInputTypeFields() {
+    const augmentedInputFields = () => {
+      const fields = resolveThunk(inputFields);
 
-  },
+      return Object.keys(fields).reduce((prev, key) => {
+        const field = fields[key];
+        const augmentedField = {
+          ...field,
+          args: {
+            input: {
+              type: new GraphQLNonNull(inputTypeFromArgs(key, field.args)),
+            },
+          },
+          type: wrapMutationOutput(key, field.type),
+          resolve: (_, {input}, context, info) => {
+            return Promise.resolve(field.resolve(input, context, info)).then(payload => {
+              payload.clientMutationId = input.clientMutationId;
+              return payload;
+            });
+          },
+        };
 
-  wrapType() {
+        return {
+          ...prev,
+          [key]: augmentedField,
+        };
+      }, {});
+    };
 
+    mutations._typeConfig.fields = augmentedInputFields;
+    return mutations;
   },
 
   wrapTypeFields(fieldThunk: Thunk): GraphQLFieldConfigMap {

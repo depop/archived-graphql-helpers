@@ -23,8 +23,6 @@ export default function buildType(
   definition: ObjectTypeDefinition,
   resolvers: {[name: string]: ResolverFn} = {},
 ): GraphQLObjectType  {
-  console.log(`Building type: ${definition['name']['value']}`);
-
   const interfaces = () =>
     definition['interfaces'].map(namedType => registry.getInterface(namedType['name']['value']));
   const fields = definition['fields'];
