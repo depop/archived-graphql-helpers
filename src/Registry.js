@@ -13,6 +13,10 @@ import {
   parse,
 } from 'graphql';
 
+import type { GraphQLFieldConfigMap } from 'graphql/type/definition';
+
+import type { Thunk } from './functools';
+
 import * as builders from './builders';
 import mergeTypes from './builders/mergeTypes';
 
@@ -47,6 +51,9 @@ const parseSpec = spec => {
 export default class Registry {
   middleware: Object;
 
+  _wrapTypeFields: (thunk: Thunk) => GraphQLFieldConfigMap;
+  _wrapMutations: (mutationsType: Object) => Object;
+
   types: {
     [key: string]: Object,
   };
@@ -77,7 +84,7 @@ export default class Registry {
     if (middleware && middleware.wrapMutations) {
       this._wrapMutations = middleware.wrapMutations;
     } else {
-      this._wrapTypeFields = identity;
+      this._wrapMutations = identity;
     }
   }
 

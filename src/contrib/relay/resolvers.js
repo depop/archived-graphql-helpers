@@ -2,10 +2,10 @@
 
 import {
   toGlobalId,
+  fromGlobalId,
 } from 'graphql-relay';
 
-
-const globalId =
+export const globalId =
   (fn) =>
   (obj, args, context, info) => {
     if (typeof fn === 'function') {
@@ -16,7 +16,29 @@ const globalId =
     return toGlobalId(info.parentType.name, obj[info.fieldName]);
   };
 
-
-export {
-  globalId,
+export const unpackId = (input) => {
+  const { id } = fromGlobalId(input);
+  return id ? id : null;
 };
+
+export const unmask = (...fields) =>
+  (executorFn) =>
+  (input, context) => executorFn({
+    ...input,
+    ...fields.reduce((prev, field) => {
+      const val = typeof field === 'function'
+        ? field(input)
+        : {[field]: unpackId(input[field])};
+
+      return {
+        ...prev,
+        ...val,
+      };
+    }, {}),
+  }, context);
+
+unmask.array = (...fields) =>
+  (input) => fields.reduce((prev, field) => ({
+    ...prev,
+    [field]: input[field].map(id => unpackId(id)),
+  }), {});
