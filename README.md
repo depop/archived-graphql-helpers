@@ -19,7 +19,7 @@ import { Registry } from 'graphql-helpers';
 
 const registry = new Registry();
 
-registry.create(`
+registry.createType(`
   type BlogEntry {
     id: ID!
     title: String
@@ -28,7 +28,7 @@ registry.create(`
   }
 `;
 
-registry.create(`
+registry.createType(`
   type Query {
     blogEntry(slug: String!): BlogEntry
     blogEntries: [BlogEntry]
@@ -56,7 +56,7 @@ If you want to split your types up into modules (as you probably should), to avo
 // Category.graphql.js
 
 export default (registry) => {
-  registry.create(`
+  registry.createType(`
     type Category {
       id: ID!
       title: String
@@ -70,7 +70,7 @@ export default (registry) => {
 // Product.graphql.js
 
 export default (registry) => {
-  registry.create(`
+  registry.createType(`
     type Product {
       id: ID!
       title: String
@@ -89,7 +89,7 @@ export default (registry) => {
 // Query.graphql.js
 
 export default (registry) => {
-  registry.create(`
+  registry.createType(`
     type Query {
       product(id: ID!): Product
       products: [Product]
@@ -134,7 +134,7 @@ import { getUser } from '../userService';
 
 const registry = new Registry();
 
-registry.create(`
+registry.createType(`
   type BlogEntry {
     id: ID!
     title: String
@@ -148,4 +148,96 @@ registry.create(`
   publicationDate: alias('publication_date'),
   author: use(timer('Fetching author'), logResult)(obj => getUser(obj.author_id)),
 };
+```
+
+## Working with Relay
+
+`graphql-helpers` was born out of the requirements of existing Relay-based codebases, so it's important that building for Relay's specific schema requirements is as straightforward as possible.  We achieve this by using a system of middleware.  Middleware allows a `Registry` to run post-processing steps on the schema types that its given, in the case of the Relay middleware, it does 2 things:
+
+1. Automatically creates a resolve function for `ID` field types that generates a suitable Global ID for use with Relay nodes.
+
+2. Automatically converts mutation field arguments into a Relay-compatible Input type, and adds a `clientMutationId` field to both the input and output payload.
+
+### Example of Relay-compatible schema definition
+
+```javascript
+import {
+  GraphQLSchema,
+} from 'graphql';
+
+import { Registry } from 'graphql-helpers';
+import { middleware } from 'graphql-helpers/lib/contrib/relay';
+
+const registry = new Registry(middleware);
+
+registry.createInterface(`
+  interface Node {
+    id: ID!
+  }
+`);
+
+registry.createType(`
+  type User implements Node {
+    id: ID!
+    username: String!
+  }
+`);
+
+registry.createType(`
+  type Query {
+    user(id: ID, username: String): User
+  }
+`);
+
+registry.createType(`
+  type LoginPayload {
+    token: String!
+  }
+`);
+
+registry.createMutations(`
+  type AuthMutations {
+    login(username: String!, password: String!): LoginPayload
+  }
+`, {
+  login: ({username, password}) => ({
+    token: `A super secure token ${username}/${password}`,
+  }),
+});
+
+new GraphQLSchema({
+  query: registry.getType('Query'),
+  mutation: registry.getMutationType(),
+});
+```
+
+We also provide helper functions to make it easy to retrieve the underlying ID values when global IDs are used in a mutation input:
+
+```javascript
+  import { unmask } from 'graphql-helpers/lib/contrib/relay';
+  import updateEvent from './updateEvent';
+
+  registry.createType(`
+    type UpdateEventPayload {
+      event: Event
+    }
+  `);
+
+  const eventArgs = `
+    id: ID!
+    name: String!
+    startDatetime: Datetime!
+    endDatetime: Datetime!
+    description: String
+    venueId: String!
+    tagIds: [String]
+  `;
+
+  registry.createMutations(`
+    type EventMutations {
+      updateEvent(${eventArgs}): UpdateEventPayload
+    }
+  `, {
+    updateEvent: unmask('id', 'venueId', unmask.array('tagIds'))(updateEvent),
+  });
 ```

@@ -1,2 +1,2 @@
 export middleware from './middleware';
-export { globalId } from './resolvers';
+export { unmask, globalId } from './resolvers';

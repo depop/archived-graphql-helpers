@@ -80,9 +80,6 @@ export default ({
   },
 
   wrapTypeFields(fieldThunk: Thunk): GraphQLFieldConfigMap {
-    /*
-    1. Wraps all ID fields with Relay's globalId
-    */
     const fields = resolveThunk(fieldThunk);
 
     return Object.keys(fields).reduce((previous, key) => {
