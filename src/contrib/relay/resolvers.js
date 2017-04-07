@@ -17,6 +17,9 @@ export const globalId =
   };
 
 export const unpackId = (input) => {
+  if (!input) {
+    return null;
+  }
   const { id } = fromGlobalId(input);
   return id ? id : null;
 };
